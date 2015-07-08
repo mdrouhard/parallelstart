@@ -95,10 +95,13 @@ void drawDataPoints(int col) {
   noFill();
   //stroke(notSelectedColor);
   //strokeWeight(3);
-  for (int row = 0; row < dataPoints.size(); row++) {
-    float[] point = dataPoints.get(row);
-    //line(plotRight, point[1], plotLeft, point[1]);
-    ellipse(point[0], point[1], 6, 6);
+  for (int row = 0; row < dataPoints.size()-1; row++) {
+    float[] pointA = dataPoints.get(row);
+    float[] pointB = dataPoints.get(row+1);
+    ellipse(pointA[0], pointA[1], 6, 6);
+    println( "pointA= (" + pointA[0], pointA[1] + ") pointB = (" + pointB[0], pointB[1] +")");
+    line(pointA[0], pointA[1], pointB[0]+xDist, pointB[1]);
+
   }  
 }
 
