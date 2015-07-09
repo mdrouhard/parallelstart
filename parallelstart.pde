@@ -73,8 +73,11 @@ void drawDataPoints(int col) {
   //stroke(notSelectedColor);
   //strokeWeight(3);
    //fill(100);
+   int endCols = 7;
     rectMode(CORNERS);
   for (int row = 0; row < dataPoints.size()-1; row++) {
+  while (col <= endCols) {
+    col = col + 1;
     float[] pointA = dataPoints.get(row);
     float[] pointB = dataPoints.get(row+1); //something wrong
     fill(0);
