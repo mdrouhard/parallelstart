@@ -1,4 +1,7 @@
 Table data;
+Axis axis;
+Plot plot;
+
 float maxValue;
 float minValue;
 float average;
@@ -20,6 +23,7 @@ int plotTop, plotBottom, plotHeight;
 int plotMiddle;
 int axisTop, axisBottom;
 int axisMiddle;
+int parallelWidth = 10;
 
 ArrayList<float[]> dataPoints;
 
@@ -30,54 +34,27 @@ color selectedColor = color(0, 0, 255, 100);
 
 void setup() {
   size(1000, 500);
+  axis = new Axis();
+  plot = new Plot();
   data = loadTable("cars.csv", "header");
+  
   numRows = data.getRowCount();
   numCols = data.getColumnCount();
-  xDist = width/ (numCols+1);
-  
-  plotLeft = plotMarginLeft;
-  plotRight = width - plotMarginRight;
-  plotWidth = plotRight - plotLeft;
-  plotTop = plotMarginTop;
-  plotBottom = height - plotMarginBottom - axisHeight;
-  plotHeight = plotBottom - plotTop;
-  plotMiddle = plotTop + (plotWidth/ 2);
-  
-  axisTop = plotLeft;
-  axisBottom = axisTop - axisHeight;
-  axisHeight = axisBottom - axisTop;
-  axisMiddle = height + (axisHeight/ 2);
-  
+  plot.drawPlot();
+
   plotFont = createFont("Verdana", 12);
   textFont(plotFont);
+  
 
 }
 
 void draw() {
-background(240);
-drawAxis();
-}
+  background(240);
+  axis.displayAxes();
+  rect(xDist-5,plotTop,xDist+5, plotBottom);
+ }
 
-void drawAxis() {
-  for( int col = 0; col < numCols; col++) {
-    xTotalDist= xDist + col*xDist;
-    line(xTotalDist, plotTop, xTotalDist, plotBottom);
-    fill(0);
-    stroke(0);
-    textAlign(CENTER, BOTTOM);
-    text(data.getColumnTitle(col), xTotalDist, axisMiddle);
-    
-    findMinMax(col);
-    textAlign(CENTER, TOP);
-    text(maxValue, xTotalDist, plotBottom);
-    textAlign(CENTER, BOTTOM);
-    text(minValue,xTotalDist, plotTop);
-    
-    calculateDataPoints(col);
-    drawDataPoints(col);
-  }
-  
-}
+
 
 void calculateDataPoints(int col) {
   dataPoints = new ArrayList<float[]>();
@@ -86,7 +63,7 @@ void calculateDataPoints(int col) {
     float x = xTotalDist;
 
     //float jitter_y = random(14);
-    float y = map(dataValue, minValue, maxValue, plotTop, plotBottom);// + jitter_y;
+    float y = map(dataValue, maxValue, minValue, plotTop, plotBottom);// + jitter_y;
     dataPoints.add(new float[] {x, y});
   }
 }
@@ -95,13 +72,26 @@ void drawDataPoints(int col) {
   noFill();
   //stroke(notSelectedColor);
   //strokeWeight(3);
+   //fill(100);
+    rectMode(CORNERS);
   for (int row = 0; row < dataPoints.size()-1; row++) {
     float[] pointA = dataPoints.get(row);
-    float[] pointB = dataPoints.get(row+1);
-    ellipse(pointA[0], pointA[1], 6, 6);
-    println( "pointA= (" + pointA[0], pointA[1] + ") pointB = (" + pointB[0], pointB[1] +")");
+    float[] pointB = dataPoints.get(row+1); //something wrong
+    fill(0);
+    ellipse(pointA[0], pointA[1], 3, 3);
+    //println( "pointA= (" + pointA[0], pointA[1] + ") pointB = (" + pointB[0]+xDist, pointB[1] +")");
+    //stroke(random(255),random(255),random(255),80);
+    stroke(0,200,230,80);
     line(pointA[0], pointA[1], pointB[0]+xDist, pointB[1]);
-
+//    beginShape(LINES);
+//    vertex(pointA[0],pointA[1]);
+//    vertex(pointB[0]+xDist,pointB[1]);
+//    endShape();
+    
+  
+    
+    
+ 
   }  
 }
 
@@ -130,5 +120,55 @@ void findMinMax(int col) {
   }
   average= (sum)/(data.getRowCount());
 }
+//draw axes and labels 
+class Axis {
 
+  void displayAxes() {
+    smooth();
+  for( int col = 0; col < numCols; col++) {
+    xTotalDist= xDist + col*xDist;
+    //line(xTotalDist, plotTop, xTotalDist, plotBottom);
+    fill(0);
+    stroke(0);
+    textAlign(CENTER, BOTTOM);
+    text(data.getColumnTitle(col), xTotalDist, axisMiddle);
+    
+    findMinMax(col);
+    textAlign(CENTER, TOP);
+    text(minValue, xTotalDist, plotBottom);
+    textAlign(CENTER, BOTTOM);
+    text(maxValue,xTotalDist, plotTop);
+    
+    //rectangles around axes
+    rectMode(CENTER);
+    noFill();
+    stroke(0,150);
+    rect(xTotalDist, plotMiddle, parallelWidth, plotHeight);
+
+    calculateDataPoints(col);
+    drawDataPoints(col);
+    noFill();
+    }
+  } 
+}
+// initialize plot variables
+class Plot {
+  
+  void drawPlot() {
+    plotLeft = plotMarginLeft;
+    plotRight = width - plotMarginRight;
+    plotWidth = plotRight - plotLeft;
+    plotTop = plotMarginTop;
+    plotBottom = height - plotMarginBottom - axisHeight;
+    plotHeight = plotBottom - plotTop;
+    plotMiddle = plotTop + (plotHeight/ 2);
+    
+    xDist = width / (numCols+1);
+    
+    axisTop = plotLeft;
+    axisBottom = axisTop - axisHeight;
+    axisHeight = axisBottom - axisTop;
+    axisMiddle = height + (axisHeight/ 2);
+  }
+}
 
