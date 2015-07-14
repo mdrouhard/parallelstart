@@ -51,18 +51,46 @@ void setup() {
 void draw() {
   background(240);
   axis.displayAxes();
-  rect(xDist-5,plotTop,xDist+5, plotBottom);
+  // What was this for?
+//  rect(xDist-5,plotTop,xDist+5, plotBottom);
  }
 
+void setupColumns() {
+   // create array of Columns (data structure added)
+   
+   // for each column
+    // calculate min, max, average and set
+    // calculate xDist & set col index and XDist 
+}
 
+void calculateDataLinePoints() {
+  // Create new table or 2D array (See processing reference for more info)
+    
+  // for each row r
+    // for each column c
+      // map dataValue from table to y value on axis & store it at array[r][c]
+}
+
+void drawDataLines() {
+  // for each row index r
+    // for each column index c (except last column)
+      // x1 = c.xDist
+      // y1 = array[r][c]
+      // x2 = (c+1).xDist
+      // y2 = array[r][c+1]
+      
+    // draw line (x1, y1, x2, y2)
+}
 
 void calculateDataPoints(int col) {
   dataPoints = new ArrayList<float[]>();
   for (int row = 0; row < data.getRowCount(); row++) {
     float dataValue = data.getFloat(row, col);
+    // try not to rely on global variables whose values will change
     float x = xTotalDist;
 
     //float jitter_y = random(14);
+    // try not to rely on global variables whose values will change
     float y = map(dataValue, maxValue, minValue, plotTop, plotBottom);// + jitter_y;
     dataPoints.add(new float[] {x, y});
   }
@@ -123,55 +151,6 @@ void findMinMax(int col) {
   }
   average= (sum)/(data.getRowCount());
 }
-//draw axes and labels 
-class Axis {
 
-  void displayAxes() {
-    smooth();
-  for( int col = 0; col < numCols; col++) {
-    xTotalDist= xDist + col*xDist;
-    //line(xTotalDist, plotTop, xTotalDist, plotBottom);
-    fill(0);
-    stroke(0);
-    textAlign(CENTER, BOTTOM);
-    text(data.getColumnTitle(col), xTotalDist, axisMiddle);
-    
-    findMinMax(col);
-    textAlign(CENTER, TOP);
-    text(minValue, xTotalDist, plotBottom);
-    textAlign(CENTER, BOTTOM);
-    text(maxValue,xTotalDist, plotTop);
-    
-    //rectangles around axes
-    rectMode(CENTER);
-    noFill();
-    stroke(0,150);
-    rect(xTotalDist, plotMiddle, parallelWidth, plotHeight);
 
-    calculateDataPoints(col);
-    drawDataPoints(col);
-    noFill();
-    }
-  } 
-}
-// initialize plot variables
-class Plot {
-  
-  void drawPlot() {
-    plotLeft = plotMarginLeft;
-    plotRight = width - plotMarginRight;
-    plotWidth = plotRight - plotLeft;
-    plotTop = plotMarginTop;
-    plotBottom = height - plotMarginBottom - axisHeight;
-    plotHeight = plotBottom - plotTop;
-    plotMiddle = plotTop + (plotHeight/ 2);
-    
-    xDist = width / (numCols+1);
-    
-    axisTop = plotLeft;
-    axisBottom = axisTop - axisHeight;
-    axisHeight = axisBottom - axisTop;
-    axisMiddle = height + (axisHeight/ 2);
-  }
-}
 
